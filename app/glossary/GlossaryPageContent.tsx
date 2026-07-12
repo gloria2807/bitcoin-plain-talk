@@ -20,8 +20,12 @@ export default function GlossaryPageContent() {
     const fetchTerms = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/terms?lang=${currentLang}`);
-        const terms = await response.json();
+        const response = await fetch(`/api/terms?lang=${currentLang}&limit=1000`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch terms');
+        }
+        const data = await response.json();
+        const terms = data.items || [];
         setAllTerms(terms);
 
         // Apply initial filtering if there's a search query
