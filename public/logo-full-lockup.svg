@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 70" width="420" height="70">
+  <g stroke-width="2.6" fill="none" stroke-linecap="round">
+    <g stroke="#C1440E">
+      <line x1="35" y1="9" x2="35" y2="19"></line>
+      <line x1="35" y1="51" x2="35" y2="61"></line>
+      <line x1="9" y1="35" x2="19" y2="35"></line>
+      <line x1="51" y1="35" x2="61" y2="35"></line>
+    </g>
+    <g stroke="#10514A">
+      <line x1="16.4" y1="16.4" x2="23.5" y2="23.5"></line>
+      <line x1="46.5" y1="46.5" x2="53.6" y2="53.6"></line>
+      <line x1="16.4" y1="53.6" x2="23.5" y2="46.5"></line>
+      <line x1="46.5" y1="23.5" x2="53.6" y2="16.4"></line>
+    </g>
+    <circle cx="35" cy="35" r="15" fill="#F7931A" stroke="none"></circle>
+  </g>
+  <text x="80" y="45" font-family="Sora, sans-serif" font-weight="800" font-size="32" fill="#1C1410">Bitcoin Plain Talk</text>
+</svg>

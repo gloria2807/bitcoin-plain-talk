@@ -2,30 +2,44 @@ import Link from "next/link";
 import { Suspense } from "react";
 import SearchBar from "@/components/SearchBar";
 import LanguageSelectorWrapper from "@/components/LanguageSelectorWrapper";
+import Logo from "@/components/Logo";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: "var(--brand-sand)" }}>
       {/* Header */}
-      <header className="border-b border-orange-200 bg-white/80 backdrop-blur-sm">
+      <header
+        className="border-b backdrop-blur-sm"
+        style={{ background: "rgba(252,247,239,0.88)", borderColor: "#e8d9c8" }}
+      >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🧡</span>
-              <h1 className="text-xl font-bold text-gray-900">Bitcoin Plain Talk</h1>
-            </div>
+            <Logo />
             <nav className="flex items-center gap-6">
-              <Link href="/glossary" className="text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors">
+              <Link
+                href="/glossary"
+                className="text-sm font-semibold hover-rust transition-colors"
+                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
+              >
                 Glossary
               </Link>
-              <Link href="/contribute" className="text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors">
+              <Link
+                href="/contribute"
+                className="text-sm font-semibold hover-rust transition-colors"
+                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
+              >
                 Contribute
               </Link>
-              <Suspense fallback={
-                <div className="rounded-lg border border-orange-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-900">
-                  English
-                </div>
-              }>
+              <Suspense
+                fallback={
+                  <div
+                    className="rounded-lg border px-3 py-1.5 text-sm font-medium"
+                    style={{ borderColor: "var(--brand-terracotta)", color: "var(--brand-ink)" }}
+                  >
+                    English
+                  </div>
+                }
+              >
                 <LanguageSelectorWrapper />
               </Suspense>
             </nav>
@@ -34,100 +48,146 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-linear-to-b from-orange-50 to-background py-20 sm:py-32">
+      <section
+        className="py-20 sm:py-32"
+        style={{ background: "linear-gradient(to bottom, #FCF7EF, var(--brand-sand))" }}
+      >
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Making Bitcoin understandable for{" "}
-            <span className="text-orange-500">everyone</span>
-          </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-700 sm:text-xl">
-            No finance degree required. No developer background needed. Just clear, honest
-            explanations written by real people, for real people — starting with Africa.
+          <p
+            className="mb-6 text-xs font-bold tracking-widest uppercase"
+            style={{ color: "var(--brand-teal)", fontFamily: "var(--font-manrope)" }}
+          >
+            Bitcoin Education for Africa
           </p>
 
-          {/* Search Bar */}
+          <h2
+            className="text-5xl font-extrabold tracking-tight sm:text-7xl"
+            style={{ color: "var(--brand-ink)", fontFamily: "var(--font-sora)", lineHeight: 1.1 }}
+          >
+            Bitcoin, in your{" "}
+            <span style={{ color: "var(--brand-orange)" }}>language.</span>
+          </h2>
+
+          <p
+            className="mt-6 text-lg leading-8 sm:text-xl"
+            style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}
+          >
+            No finance degree required. No developer background needed. Just clear, honest
+            explanations written by real people — starting with Africa.
+          </p>
+
           <div className="mt-10 flex justify-center">
             <SearchBar variant="hero" />
           </div>
 
-          {/* Quick Stats */}
-          <div className="mt-12 flex flex-wrap justify-center gap-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500">50+</div>
-              <div className="mt-1 text-sm text-gray-600">Bitcoin Terms</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500">2</div>
-              <div className="mt-1 text-sm text-gray-600">Languages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500">100%</div>
-              <div className="mt-1 text-sm text-gray-600">Open Source</div>
-            </div>
+          <div className="mt-12 flex flex-wrap justify-center gap-10">
+            {[
+              { stat: "50+", label: "Bitcoin Terms" },
+              { stat: "5", label: "Languages" },
+              { stat: "100%", label: "Open Source" },
+            ].map(({ stat, label }) => (
+              <div key={label} className="text-center">
+                <div
+                  className="text-4xl font-extrabold"
+                  style={{ color: "var(--brand-orange)", fontFamily: "var(--font-sora)" }}
+                >
+                  {stat}
+                </div>
+                <div
+                  className="mt-1 text-sm font-medium"
+                  style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}
+                >
+                  {label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Featured Terms */}
-      <section className="py-16 sm:py-24">
+      <section className="py-16 sm:py-24" style={{ background: "var(--brand-sand)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p
+              className="mb-3 text-xs font-bold tracking-widest uppercase"
+              style={{ color: "var(--brand-teal)", fontFamily: "var(--font-manrope)" }}
+            >
+              Start Here
+            </p>
+            <h3
+              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              style={{ color: "var(--brand-ink)", fontFamily: "var(--font-sora)" }}
+            >
               Featured Terms
             </h3>
-            <p className="mt-4 text-lg text-gray-700">
+            <p
+              className="mt-4 text-lg"
+              style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}
+            >
               Start your Bitcoin journey with these essential concepts
             </p>
           </div>
 
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Term Card 1 */}
-            <div className="group rounded-2xl border border-orange-200 bg-white p-6 transition-all hover:border-orange-400 hover:shadow-lg hover:shadow-orange-100">
-              <div className="flex items-start justify-between">
-                <h4 className="text-xl font-semibold text-gray-900">Mempool</h4>
-                <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700">EN</span>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                A waiting room for Bitcoin transactions that haven't been confirmed yet.
-              </p>
-              <Link href="/glossary/mempool" className="mt-4 inline-flex items-center text-sm font-medium text-orange-600 group-hover:text-orange-700">
-                Read more →
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                slug: "mempool",
+                title: "Mempool",
+                body: "A waiting room for Bitcoin transactions that haven't been confirmed yet.",
+              },
+              {
+                slug: "utxo",
+                title: "UTXO",
+                body: "Unspent Transaction Output — the pieces of bitcoin you actually own and can spend.",
+              },
+              {
+                slug: "hashrate",
+                title: "Hashrate",
+                body: "The total computing power securing the Bitcoin network — the network's heartbeat.",
+              },
+            ].map((term) => (
+              <Link
+                key={term.slug}
+                href={`/glossary/${term.slug}`}
+                className="card-link group rounded-2xl p-6"
+                style={{ background: "var(--brand-shell)" }}
+              >
+                <div className="flex items-start justify-between">
+                  <h4
+                    className="text-xl font-bold"
+                    style={{ color: "var(--brand-ink)", fontFamily: "var(--font-sora)" }}
+                  >
+                    {term.title}
+                  </h4>
+                  <span
+                    className="rounded-full px-3 py-1 text-xs font-bold"
+                    style={{ background: "#FFE8C0", color: "var(--brand-rust)" }}
+                  >
+                    EN
+                  </span>
+                </div>
+                <p
+                  className="mt-3 text-sm leading-relaxed"
+                  style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}
+                >
+                  {term.body}
+                </p>
+                <div
+                  className="mt-4 flex items-center text-sm font-semibold"
+                  style={{ color: "var(--brand-rust)", fontFamily: "var(--font-manrope)" }}
+                >
+                  Read more →
+                </div>
               </Link>
-            </div>
-
-            {/* Term Card 2 */}
-            <div className="group rounded-2xl border border-orange-200 bg-white p-6 transition-all hover:border-orange-400 hover:shadow-lg hover:shadow-orange-100">
-              <div className="flex items-start justify-between">
-                <h4 className="text-xl font-semibold text-gray-900">UTXO</h4>
-                <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700">EN</span>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                Unspent Transaction Output — the pieces of bitcoin you actually own and can spend.
-              </p>
-              <Link href="/glossary/utxo" className="mt-4 inline-flex items-center text-sm font-medium text-orange-600 group-hover:text-orange-700">
-                Read more →
-              </Link>
-            </div>
-
-            {/* Term Card 3 */}
-            <div className="group rounded-2xl border border-orange-200 bg-white p-6 transition-all hover:border-orange-400 hover:shadow-lg hover:shadow-orange-100">
-              <div className="flex items-start justify-between">
-                <h4 className="text-xl font-semibold text-gray-900">Hashrate</h4>
-                <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700">EN</span>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                The total computing power securing the Bitcoin network — think of it as the network's heartbeat.
-              </p>
-              <Link href="/glossary/hashrate" className="mt-4 inline-flex items-center text-sm font-medium text-orange-600 group-hover:text-orange-700">
-                Read more →
-              </Link>
-            </div>
+            ))}
           </div>
 
           <div className="mt-12 text-center">
             <Link
               href="/glossary"
-              className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-8 py-3 font-semibold text-white transition-colors hover:bg-orange-600"
+              className="hover-rust-bg inline-flex items-center gap-2 rounded-full px-8 py-3 font-bold text-white transition-colors"
+              style={{ background: "var(--brand-orange)", fontFamily: "var(--font-manrope)" }}
             >
               Browse All Terms
             </Link>
@@ -136,18 +196,25 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-linear-to-b from-orange-50 to-orange-100 py-16 sm:py-20">
+      <section className="py-16 sm:py-20" style={{ background: "var(--brand-shell)" }}>
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+          <h3
+            className="text-3xl font-bold sm:text-4xl"
+            style={{ color: "var(--brand-ink)", fontFamily: "var(--font-sora)" }}
+          >
             Help Build Bitcoin Education for Africa
           </h3>
-          <p className="mt-4 text-lg text-gray-700">
+          <p
+            className="mt-4 text-lg"
+            style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}
+          >
             You don't need to be a developer to contribute. If you can explain something clearly — you belong here.
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/contribute"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-orange-700"
+              className="hover-rust-bg inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 font-bold text-white transition-colors"
+              style={{ background: "var(--brand-orange)", fontFamily: "var(--font-manrope)" }}
             >
               Start Contributing
             </Link>
@@ -155,7 +222,13 @@ export default function Home() {
               href="https://github.com/wandiamugo/bitcoin-plain-talk"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-orange-600 bg-transparent px-8 py-3 font-semibold text-orange-700 transition-colors hover:bg-orange-50"
+              className="hover-rust-tint inline-flex items-center justify-center gap-2 rounded-full border-2 px-8 py-3 font-bold transition-colors"
+              style={{
+                borderColor: "var(--brand-rust)",
+                color: "var(--brand-rust)",
+                background: "transparent",
+                fontFamily: "var(--font-manrope)",
+              }}
             >
               View on GitHub
             </a>
@@ -164,17 +237,25 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-orange-200 bg-white py-12">
+      <footer className="border-t py-12" style={{ borderColor: "#2a1e16", background: "var(--brand-ink)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-gray-600">
-              Built with 🧡 by{" "}
-              <a href="https://twitter.com/wandiology" target="_blank" rel="noopener noreferrer" className="font-medium text-orange-600 hover:text-orange-700">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <img src="/logo-full-lockup-reversed.svg" alt="Bitcoin Plain Talk" height="28" style={{ height: 28 }} />
+            <p
+              className="text-sm"
+              style={{ color: "#b8a090", fontFamily: "var(--font-manrope)" }}
+            >
+              Built by{" "}
+              <a
+                href="https://twitter.com/wandiology"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold"
+                style={{ color: "var(--brand-orange)" }}
+              >
                 @wandiology
-              </a>
-            </p>
-            <p className="text-sm text-gray-600">
-              MIT License — Free to use, share, and build on
+              </a>{" "}
+              · MIT License — Free to use, share, and build on
             </p>
           </div>
         </div>

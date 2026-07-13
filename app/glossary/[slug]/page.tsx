@@ -3,14 +3,32 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import LanguageSelector from '@/components/LanguageSelector';
+import Logo from '@/components/Logo';
 import { useEffect, useState, use } from 'react';
 import type { Term } from '@/lib/glossary';
 
-export default function TermPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+const langLabel: Record<string, string> = {
+  en: 'English',
+  sw: 'Swahili',
+  pcm: 'Pidgin',
+  ki: 'Kikuyu',
+  yo: 'Yoruba',
+};
+
+const sectionLabels: Record<string, Record<string, string>> = {
+  plainEnglish: { en: 'Plain English', sw: 'Maelezo Rahisi', pcm: 'Plain Pidgin', ki: 'Gĩthũngũ', yo: 'Ìtumọ̀ Rọrùn' },
+  analogy:      { en: 'Analogy', sw: 'Mfano wa Kila Siku', pcm: 'Analogy', ki: 'Mfano wa Kila Siku', yo: 'Àpẹẹrẹ' },
+  inContext:    { en: 'In Context', sw: 'Jinsi Inavyotumiwa', pcm: 'In Context', ki: 'Jinsi Inavyotumiwa', yo: 'Ní Ìtumọ̀ Gidi' },
+  contextMeaning: { en: 'What this means:', sw: 'Maana yake:', pcm: 'What this means:', ki: 'Maana yake:', yo: 'Ìtumọ̀ èyí:' },
+  whyItMatters: { en: 'Why It Matters', sw: 'Kwa Nini Ni Muhimu', pcm: 'Why It Matters', ki: 'Kwa Nini Ni Muhimu', yo: 'Kí Ló Dé Tí Ó Fi Ṣe Pátáki?' },
+  relatedTerms: { en: 'Related Terms', sw: 'Maneno Yanayohusiana', pcm: 'Related Terms', ki: 'Maneno Yanayohusiana', yo: 'Àwọn Ọ̀rọ̀ Tó Ní Ìbáṣepọ̀' },
+};
+
+function label(section: string, lang: string) {
+  return sectionLabels[section]?.[lang] ?? sectionLabels[section]?.['en'] ?? section;
+}
+
+export default function TermPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const searchParams = useSearchParams();
   const currentLang = searchParams.get('lang') || 'en';
@@ -22,14 +40,8 @@ export default function TermPage({
       setLoading(true);
       try {
         const response = await fetch(`/api/terms/${slug}?lang=${currentLang}`);
-        if (response.ok) {
-          const data = await response.json();
-          setTerm(data);
-        } else {
-          setTerm(null);
-        }
-      } catch (error) {
-        console.error('Failed to fetch term:', error);
+        setTerm(response.ok ? await response.json() : null);
+      } catch {
         setTerm(null);
       } finally {
         setLoading(false);
@@ -38,107 +50,140 @@ export default function TermPage({
     fetchTerm();
   }, [slug, currentLang]);
 
+  const headerBar = (
+    <header
+      className="sticky top-0 z-10 border-b backdrop-blur-sm"
+      style={{ background: 'rgba(252,247,239,0.92)', borderColor: '#e8d9c8' }}
+    >
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          <Link href="/"><Logo /></Link>
+          <nav className="flex items-center gap-6">
+            <Link href="/glossary" className="text-sm font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}>
+              Glossary
+            </Link>
+            <Link href="/contribute" className="hover-rust text-sm font-semibold transition-colors" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+              Contribute
+            </Link>
+            <LanguageSelector />
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-lg text-gray-600">Loading...</p>
+      <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
+        {headerBar}
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>Loading...</p>
+        </div>
       </div>
     );
   }
 
   if (!term) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-lg text-gray-600">Term not found</p>
+      <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
+        {headerBar}
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>Term not found</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-orange-200 bg-white/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🧡</span>
-              <h1 className="text-xl font-bold text-gray-900">Bitcoin Plain Talk</h1>
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link href="/glossary" className="text-sm font-medium text-orange-600">
-                Glossary
-              </Link>
-              <Link href="/contribute" className="text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                Contribute
-              </Link>
-              <LanguageSelector />
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
+      {headerBar}
 
       <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-gray-600">
-          <Link href="/" className="hover:text-orange-600">Home</Link>
+        <nav
+          className="mb-8 flex items-center gap-2 text-sm"
+          style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}
+        >
+          <Link href="/" className="hover-rust transition-colors" style={{ color: '#5a3e2b' }}>Home</Link>
           <span>/</span>
-          <Link href="/glossary" className="hover:text-orange-600">Glossary</Link>
+          <Link href="/glossary" className="hover-rust transition-colors" style={{ color: '#5a3e2b' }}>Glossary</Link>
           <span>/</span>
-          <span className="text-gray-900">{term.title}</span>
+          <span style={{ color: 'var(--brand-ink)' }}>{term.title}</span>
         </nav>
 
         {/* Term Header */}
         <div className="mb-8">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight text-orange-500 sm:text-5xl">
-                {term.title}
-              </h1>
-              <div className="mt-4 flex items-center gap-3">
-                <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700">
-                  {term.category}
-                </span>
-                <span className="rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-600">
-                  {currentLang === 'en' ? 'English' : currentLang === 'sw' ? 'Swahili' : currentLang === 'pcm' ? 'Pidgin' : currentLang === 'ki' ? 'Kikuyu' : 'Yoruba'}
-                </span>
-              </div>
-            </div>
+          <h1
+            className="text-4xl font-extrabold tracking-tight sm:text-5xl"
+            style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-sora)' }}
+          >
+            {term.title}
+          </h1>
+          <div className="mt-4 flex items-center gap-3">
+            <span
+              className="rounded-full px-3 py-1 text-sm font-bold"
+              style={{ background: '#FFE8C0', color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
+            >
+              {term.category}
+            </span>
+            <span
+              className="rounded-full px-3 py-1 text-sm font-medium"
+              style={{ background: 'rgba(31,138,122,0.12)', color: 'var(--brand-teal)', fontFamily: 'var(--font-manrope)' }}
+            >
+              {langLabel[currentLang] ?? currentLang}
+            </span>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="space-y-8">
-          {/* Plain English / Maelezo Rahisi */}
-          <section className="rounded-2xl border border-orange-200 bg-white p-8">
-            <h2 className="mb-4 text-2xl font-bold text-orange-500">
-              {currentLang === 'sw' ? 'Maelezo Rahisi' : currentLang === 'pcm' ? 'Plain Pidgin' : currentLang === 'ki' ? 'Gĩthũngũ' : currentLang === 'yo' ? 'Ní Ìtumọ̀ Rọrùn' : 'Plain English'}
+        {/* Content Sections */}
+        <div className="space-y-6">
+          {/* Plain English */}
+          <section
+            className="rounded-2xl border p-8"
+            style={{ background: 'var(--brand-shell)', borderColor: '#e8d9c8' }}
+          >
+            <h2 className="mb-4 text-2xl font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}>
+              {label('plainEnglish', currentLang)}
             </h2>
-            <p className="text-lg leading-relaxed text-gray-800">{term.plainEnglish}</p>
+            <p className="text-lg leading-relaxed" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+              {term.plainEnglish}
+            </p>
           </section>
 
-          {/* Analogy / Mfano wa Kila Siku */}
+          {/* Analogy */}
           {term.analogy && (
-            <section className="rounded-2xl border border-orange-200 bg-orange-50 p-8">
-              <h2 className="mb-4 text-2xl font-bold text-orange-500">
-                {currentLang === 'sw' ? 'Mfano wa Kila Siku' : currentLang === 'pcm' ? 'Analogy' : currentLang === 'ki' ? 'Mfano wa Kila Siku' : currentLang === 'yo' ? 'Àpẹẹrẹ' : 'Analogy'}
+            <section
+              className="rounded-2xl border p-8"
+              style={{ background: '#FFF5E8', borderColor: '#ffd4a0' }}
+            >
+              <h2 className="mb-4 text-2xl font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}>
+                {label('analogy', currentLang)}
               </h2>
-              <p className="text-lg leading-relaxed text-gray-800">{term.analogy}</p>
+              <p className="text-lg leading-relaxed" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+                {term.analogy}
+              </p>
             </section>
           )}
 
-          {/* In Context / Jinsi Inavyotumiwa */}
+          {/* In Context */}
           {term.inContext && (
-            <section className="rounded-2xl border border-orange-200 bg-white p-8">
-              <h2 className="mb-4 text-2xl font-bold text-orange-500">
-                {currentLang === 'sw' ? 'Jinsi Inavyotumiwa' : currentLang === 'pcm' ? 'In Context' : currentLang === 'yo' ? 'Ní Ìtumọ̀ Gidi' : currentLang === 'ki' ? 'Jinsi Inavyotumiwa' : currentLang === 'yo' ? 'Ní Àwọn Èyàn Tó Kọ' : 'In Context'}
+            <section
+              className="rounded-2xl border p-8"
+              style={{ background: 'var(--brand-shell)', borderColor: '#e8d9c8' }}
+            >
+              <h2 className="mb-4 text-2xl font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}>
+                {label('inContext', currentLang)}
               </h2>
-              <blockquote className="border-l-4 border-orange-400 pl-6 italic text-lg text-gray-700">
+              <blockquote
+                className="border-l-4 pl-6 text-lg italic"
+                style={{ borderColor: 'var(--brand-orange)', color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}
+              >
                 &quot;{term.inContext}&quot;
               </blockquote>
               {term.contextMeaning && (
-                <p className="mt-4 text-base leading-relaxed text-gray-700">
-                  <span className="font-semibold text-gray-900">
-                    {currentLang === 'sw' ? 'Maana yake:' : currentLang === 'yo' ? 'Ìtumọ̀ èyí:' : 'What this means:'}
+                <p className="mt-4 text-base leading-relaxed" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
+                  <span className="font-semibold" style={{ color: 'var(--brand-ink)' }}>
+                    {label('contextMeaning', currentLang)}
                   </span>{' '}
                   {term.contextMeaning}
                 </p>
@@ -146,28 +191,37 @@ export default function TermPage({
             </section>
           )}
 
-          {/* Why It Matters / Kwa Nini Ni Muhimu */}
+          {/* Why It Matters */}
           {term.whyItMatters && (
-            <section className="rounded-2xl border border-orange-200 bg-white p-8">
-              <h2 className="mb-4 text-2xl font-bold text-orange-500">
-                {currentLang === 'sw' ? 'Kwa Nini Ni Muhimu' : currentLang === 'yo' ? 'Kí Ló Dé Tí Ó Fi Ṣe Pátáki?' : 'Why It Matters'}
+            <section
+              className="rounded-2xl border p-8"
+              style={{ background: 'var(--brand-shell)', borderColor: '#e8d9c8' }}
+            >
+              <h2 className="mb-4 text-2xl font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}>
+                {label('whyItMatters', currentLang)}
               </h2>
-              <p className="text-lg leading-relaxed text-gray-800">{term.whyItMatters}</p>
+              <p className="text-lg leading-relaxed" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+                {term.whyItMatters}
+              </p>
             </section>
           )}
 
-          {/* Related Terms / Maneno Yanayohusiana */}
+          {/* Related Terms */}
           {term.relatedTerms.length > 0 && (
-            <section className="rounded-2xl border border-orange-200 bg-white p-8">
-              <h2 className="mb-4 text-2xl font-bold text-orange-500">
-                {currentLang === 'sw' ? 'Maneno Yanayohusiana' : currentLang === 'yo' ? 'Àwọn Ọ̀rọ̀ Tó Ní Ìbáṣepọ̀' : 'Related Terms'}
+            <section
+              className="rounded-2xl border p-8"
+              style={{ background: 'var(--brand-shell)', borderColor: '#e8d9c8' }}
+            >
+              <h2 className="mb-4 text-2xl font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}>
+                {label('relatedTerms', currentLang)}
               </h2>
               <ul className="space-y-2">
-                {term.relatedTerms.map((relatedTerm) => (
+                {term.relatedTerms.map(relatedTerm => (
                   <li key={relatedTerm}>
                     <Link
                       href={`/glossary/${relatedTerm.toLowerCase().replace(/\s+/g, '-')}?lang=${currentLang}`}
-                      className="inline-flex items-center text-orange-600 hover:text-orange-700 hover:underline"
+                      className="hover-rust inline-flex items-center font-semibold transition-colors"
+                      style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
                     >
                       → {relatedTerm}
                     </Link>
@@ -178,11 +232,12 @@ export default function TermPage({
           )}
         </div>
 
-        {/* Navigation */}
+        {/* Back Navigation */}
         <div className="mt-12 flex justify-center">
           <Link
             href="/glossary"
-            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-8 py-3 font-semibold text-white transition-colors hover:bg-orange-600"
+            className="hover-rust-bg inline-flex items-center gap-2 rounded-full px-8 py-3 font-bold text-white transition-colors"
+            style={{ background: 'var(--brand-orange)', fontFamily: 'var(--font-manrope)' }}
           >
             ← Back to Glossary
           </Link>
@@ -190,22 +245,16 @@ export default function TermPage({
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-orange-200 bg-white py-12">
+      <footer className="mt-20 border-t py-12" style={{ borderColor: '#2a1e16', background: 'var(--brand-ink)' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-gray-600">
-              Built with 🧡 by{' '}
-              <a
-                href="https://twitter.com/wandiology"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-orange-600 hover:text-orange-700"
-              >
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <img src="/logo-full-lockup-reversed.svg" alt="Bitcoin Plain Talk" style={{ height: 28 }} />
+            <p className="text-sm" style={{ color: '#b8a090', fontFamily: 'var(--font-manrope)' }}>
+              Built by{' '}
+              <a href="https://twitter.com/wandiology" target="_blank" rel="noopener noreferrer" className="font-semibold" style={{ color: 'var(--brand-orange)' }}>
                 @wandiology
-              </a>
-            </p>
-            <p className="text-sm text-gray-600">
-              MIT License — Free to use, share, and build on
+              </a>{' '}
+              · MIT License — Free to use, share, and build on
             </p>
           </div>
         </div>

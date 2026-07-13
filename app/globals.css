@@ -1,46 +1,68 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fefaf8;
-  --foreground: #0f0a08;
-  --orange-50: #fff5ed;
-  --orange-100: #ffe8d5;
-  --orange-200: #ffd4b3;
-  --orange-300: #ffb885;
-  --orange-400: #ff9c5c;
-  --orange-500: #ff8033;
-  --orange-600: #f96d1f;
-  --orange-700: #e25a0f;
-  --orange-800: #b84910;
-  --orange-900: #943d10;
+  /* Brand palette */
+  --brand-orange: #F7931A;
+  --brand-rust: #C1440E;
+  --brand-terracotta: #D9824B;
+  --brand-crimson: #8C2320;
+  --brand-teal: #1F8A7A;      /* vibrant teal for UI/text on light backgrounds */
+  --brand-teal-deep: #10514A; /* deep teal for logo strokes on light backgrounds */
+  --brand-ink: #1C1410;
+  --brand-sand: #F7EFE1;
+  --brand-shell: #FCF7EF;
+
+  --background: var(--brand-sand);
+  --foreground: var(--brand-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-orange-50: var(--orange-50);
-  --color-orange-100: var(--orange-100);
-  --color-orange-200: var(--orange-200);
-  --color-orange-300: var(--orange-300);
-  --color-orange-400: var(--orange-400);
-  --color-orange-500: var(--orange-500);
-  --color-orange-600: var(--orange-600);
-  --color-orange-700: var(--orange-700);
-  --color-orange-800: var(--orange-800);
-  --color-orange-900: var(--orange-900);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f0a08;
-    --foreground: #f5f5f5;
-  }
+  /* Brand colors as Tailwind utilities */
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-rust: var(--brand-rust);
+  --color-brand-terracotta: var(--brand-terracotta);
+  --color-brand-crimson: var(--brand-crimson);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-teal-deep: var(--brand-teal-deep);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-sand: var(--brand-sand);
+  --color-brand-shell: var(--brand-shell);
+
+  /* Keep orange scale for backward compat */
+  --color-orange-50: #fff5ed;
+  --color-orange-100: #ffe8d5;
+  --color-orange-200: #ffd4b3;
+  --color-orange-300: #ffb885;
+  --color-orange-400: #D9824B;
+  --color-orange-500: #F7931A;
+  --color-orange-600: #C1440E;
+  --color-orange-700: #8C2320;
+
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-sora);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+/* Brand hover utilities */
+.hover-rust:hover { color: var(--brand-rust) !important; }
+.hover-rust-bg:hover { background: var(--brand-rust) !important; }
+.hover-crimson-bg:hover { background: var(--brand-crimson) !important; }
+.hover-orange-bg:hover { background: var(--brand-orange) !important; }
+.hover-orange-border:hover { border-color: var(--brand-orange) !important; }
+.hover-rust-tint:hover { background: rgba(193, 68, 14, 0.06) !important; }
+.card-link {
+  transition: border-color 0.15s, box-shadow 0.15s;
+  border: 1px solid #e8d9c8;
+}
+.card-link:hover {
+  border-color: var(--brand-orange);
+  box-shadow: 0 8px 24px rgba(247, 147, 26, 0.12);
 }

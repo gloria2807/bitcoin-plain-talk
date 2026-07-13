@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { Term } from '@/lib/glossary';
 import LanguageSelector from '@/components/LanguageSelector';
+import Logo from '@/components/Logo';
 
 export default function GlossaryPageContent() {
   const searchParams = useSearchParams();
@@ -20,15 +21,11 @@ export default function GlossaryPageContent() {
     const fetchTerms = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/terms?lang=${currentLang}&limit=1000`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch terms');
-        }
+        const response = await fetch(`/api/terms?lang=${currentLang}&limit=500`);
         const data = await response.json();
-        const terms = data.items || [];
+        const terms: Term[] = Array.isArray(data) ? data : (data.items ?? []);
         setAllTerms(terms);
 
-        // Apply initial filtering if there's a search query
         if (!searchQuery.trim()) {
           setFilteredTerms(terms);
         } else {
@@ -58,7 +55,6 @@ export default function GlossaryPageContent() {
       setFilteredTerms(allTerms);
       return;
     }
-
     const lowerQuery = query.toLowerCase();
     const filtered = allTerms.filter((term: Term) =>
       term.title.toLowerCase().includes(lowerQuery) ||
@@ -76,11 +72,8 @@ export default function GlossaryPageContent() {
 
   const terms = filteredTerms;
 
-  // Group terms by category
   const termsByCategory = terms.reduce((acc, term) => {
-    if (!acc[term.category]) {
-      acc[term.category] = [];
-    }
+    if (!acc[term.category]) acc[term.category] = [];
     acc[term.category].push(term);
     return acc;
   }, {} as Record<string, typeof terms>);
@@ -88,23 +81,30 @@ export default function GlossaryPageContent() {
   const categories = Object.keys(termsByCategory).sort();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-orange-200 bg-white/80 backdrop-blur-sm">
+      <header
+        className="sticky top-0 z-10 border-b backdrop-blur-sm"
+        style={{ background: 'rgba(252,247,239,0.92)', borderColor: '#e8d9c8' }}
+      >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🧡</span>
-              <h1 className="text-xl font-bold text-gray-900">Bitcoin Plain Talk</h1>
+            <Link href="/">
+              <Logo />
             </Link>
             <nav className="flex items-center gap-6">
-              <Link href="/glossary" className="text-sm font-medium text-orange-600">
+              <Link
+                href="/glossary"
+                className="text-sm font-bold"
+                style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
+              >
                 Glossary
               </Link>
-              <Link href="/chat" className="text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors">
-                Chat
-              </Link>
-              <Link href="/contribute" className="text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors">
+              <Link
+                href="/contribute"
+                className="hover-rust text-sm font-semibold transition-colors"
+                style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}
+              >
                 Contribute
               </Link>
               <LanguageSelector />
@@ -116,14 +116,26 @@ export default function GlossaryPageContent() {
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-12 text-center">
-          <h2 className="text-4xl font-bold tracking-tight text-orange-500 sm:text-5xl">
+          <p
+            className="mb-3 text-xs font-bold tracking-widest uppercase"
+            style={{ color: 'var(--brand-teal)', fontFamily: 'var(--font-manrope)' }}
+          >
+            Reference
+          </p>
+          <h2
+            className="text-4xl font-extrabold tracking-tight sm:text-5xl"
+            style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-sora)' }}
+          >
             Bitcoin Glossary
           </h2>
-          <p className="mt-4 text-lg text-gray-700">
+          <p
+            className="mt-4 text-lg"
+            style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}
+          >
             {terms.length} terms explained in plain language
           </p>
 
-          {/* Search Bar */}
+          {/* Search */}
           <div className="mt-8 flex justify-center">
             <div className="w-full max-w-2xl">
               <input
@@ -131,18 +143,28 @@ export default function GlossaryPageContent() {
                 value={searchInput}
                 onChange={handleSearchChange}
                 placeholder="Search terms..."
-                className="w-full rounded-full border-2 border-orange-200 bg-white px-6 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100"
+                className="w-full rounded-full border-2 px-6 py-3 text-base focus:outline-none"
+                style={{
+                  borderColor: '#e8d9c8',
+                  background: 'var(--brand-shell)',
+                  color: 'var(--brand-ink)',
+                  fontFamily: 'var(--font-manrope)',
+                }}
+                onFocus={e => {
+                  e.currentTarget.style.borderColor = 'var(--brand-orange)';
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.borderColor = '#e8d9c8';
+                }}
               />
             </div>
           </div>
 
-          {/* Search Results Info */}
           {searchInput && (
-            <p className="mt-4 text-center text-sm text-gray-600">
+            <p className="mt-4 text-sm" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
               {terms.length > 0
                 ? `Found ${terms.length} term${terms.length === 1 ? '' : 's'} matching "${searchInput}"`
-                : `No terms found matching "${searchInput}"`
-              }
+                : `No terms found matching "${searchInput}"`}
             </p>
           )}
         </div>
@@ -151,31 +173,50 @@ export default function GlossaryPageContent() {
         <div className="space-y-16">
           {categories.map(category => (
             <div key={category}>
-              <h3 className="mb-6 text-2xl font-bold text-orange-500">
+              <h3
+                className="mb-6 text-2xl font-bold"
+                style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-sora)' }}
+              >
                 {category}
-                <span className="ml-3 text-sm font-normal text-gray-600">
+                <span
+                  className="ml-3 text-sm font-normal"
+                  style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}
+                >
                   ({termsByCategory[category].length})
                 </span>
               </h3>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {termsByCategory[category].map(term => (
                   <Link
                     key={term.slug}
                     href={`/glossary/${term.slug}`}
-                    className="group rounded-2xl border border-orange-200 bg-white p-6 transition-all hover:border-orange-400 hover:shadow-lg hover:shadow-orange-100"
+                    className="card-link group rounded-2xl p-6"
+                    style={{ background: 'var(--brand-shell)' }}
                   >
                     <div className="flex items-start justify-between">
-                      <h4 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600">
+                      <h4
+                        className="text-xl font-bold"
+                        style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-sora)' }}
+                      >
                         {term.title}
                       </h4>
-                      <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-700">
-                        EN
+                      <span
+                        className="rounded-full px-2.5 py-0.5 text-xs font-bold"
+                        style={{ background: '#FFE8C0', color: 'var(--brand-rust)' }}
+                      >
+                        {currentLang.toUpperCase()}
                       </span>
                     </div>
-                    <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-700">
+                    <p
+                      className="mt-3 line-clamp-2 text-sm leading-relaxed"
+                      style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}
+                    >
                       {term.plainEnglish}
                     </p>
-                    <div className="mt-4 flex items-center text-sm font-medium text-orange-600 group-hover:text-orange-700">
+                    <div
+                      className="mt-4 flex items-center text-sm font-semibold"
+                      style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
+                    >
                       Read more →
                     </div>
                   </Link>
@@ -185,38 +226,40 @@ export default function GlossaryPageContent() {
           ))}
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-lg text-gray-600">Loading terms...</p>
+            <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
+              Loading terms...
+            </p>
           </div>
         )}
 
-        {/* Empty State */}
         {!loading && terms.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-lg text-gray-600">No terms found</p>
+            <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
+              No terms found
+            </p>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-orange-200 bg-white py-12">
+      <footer className="mt-20 border-t py-12" style={{ borderColor: '#2a1e16', background: 'var(--brand-ink)' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-gray-600">
-              Built with 🧡 by{' '}
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <img src="/logo-full-lockup-reversed.svg" alt="Bitcoin Plain Talk" style={{ height: 28 }} />
+            <p className="text-sm" style={{ color: '#b8a090', fontFamily: 'var(--font-manrope)' }}>
+              Built by{' '}
               <a
                 href="https://twitter.com/wandiology"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-orange-600 hover:text-orange-700"
+                className="font-semibold"
+                style={{ color: 'var(--brand-orange)' }}
               >
                 @wandiology
-              </a>
-            </p>
-            <p className="text-sm text-gray-600">
-              MIT License — Free to use, share, and build on
+              </a>{' '}
+              · MIT License — Free to use, share, and build on
             </p>
           </div>
         </div>
