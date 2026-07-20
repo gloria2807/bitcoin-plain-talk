@@ -61,6 +61,16 @@ export default function ContributePage() {
           <p className="mt-4 text-lg" style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}>
             Help make Bitcoin understandable for everyone
           </p>
+          <Link
+            href="/contribute/new"
+            className="hover-rust-bg mt-8 inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 font-bold text-white transition-colors"
+            style={{ background: "var(--brand-orange)", fontFamily: "var(--font-manrope)" }}
+          >
+            Suggest a Term →
+          </Link>
+          <p className="mt-3 text-sm" style={{ color: "#8a7360", fontFamily: "var(--font-manrope)" }}>
+            No GitHub account needed — fill in a form and we&apos;ll turn it into a pull request for review.
+          </p>
         </div>
 
         <div className="space-y-8">
@@ -100,13 +110,25 @@ export default function ContributePage() {
                   num: "1",
                   title: "Add a New Term",
                   content: (
-                    <ol className="mt-4 space-y-2" style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}>
-                      <li>• Fork the repository on GitHub</li>
-                      <li>• Navigate to <code className="rounded px-2 py-0.5 text-sm" style={{ background: "#FFE8C0", color: "var(--brand-rust)" }}>/glossary</code></li>
-                      <li>• Copy the <code className="rounded px-2 py-0.5 text-sm" style={{ background: "#FFE8C0", color: "var(--brand-rust)" }}>_template.md</code> file</li>
-                      <li>• Fill in the term, explanation, analogy, example, and translation</li>
-                      <li>• Submit a Pull Request</li>
-                    </ol>
+                    <>
+                      <p className="mt-4" style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}>
+                        Easiest way: use the{" "}
+                        <Link href="/contribute/new" className="font-bold underline" style={{ color: "var(--brand-rust)" }}>
+                          Suggest a Term form
+                        </Link>{" "}
+                        — no GitHub account required, it opens a pull request for you.
+                      </p>
+                      <p className="mt-2 text-sm" style={{ color: "#8a7360", fontFamily: "var(--font-manrope)" }}>
+                        Prefer working directly in GitHub? You can also:
+                      </p>
+                      <ol className="mt-2 space-y-2" style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}>
+                        <li>• Fork the repository on GitHub</li>
+                        <li>• Navigate to <code className="rounded px-2 py-0.5 text-sm" style={{ background: "#FFE8C0", color: "var(--brand-rust)" }}>/glossary</code></li>
+                        <li>• Copy the <code className="rounded px-2 py-0.5 text-sm" style={{ background: "#FFE8C0", color: "var(--brand-rust)" }}>_template.md</code> file</li>
+                        <li>• Fill in the term, explanation, analogy, example, and translation</li>
+                        <li>• Submit a Pull Request</li>
+                      </ol>
+                    </>
                   ),
                 },
                 {
@@ -123,8 +145,12 @@ export default function ContributePage() {
                   title: "Add a Translation",
                   content: (
                     <p className="mt-4" style={{ color: "#5a3e2b", fontFamily: "var(--font-manrope)" }}>
-                      We need explanations in Swahili, Yoruba, Amharic, Hausa, Zulu, Pidgin, and more.
-                      If you speak a language, you can contribute.
+                      We need explanations in Swahili, Yoruba, Kikuyu, Pidgin, and more.
+                      If you speak a language, you can contribute — use the{" "}
+                      <Link href="/contribute/new" className="font-bold underline" style={{ color: "var(--brand-rust)" }}>
+                        Suggest a Term form
+                      </Link>{" "}
+                      and pick &quot;Translate an existing term.&quot;
                     </p>
                   ),
                 },

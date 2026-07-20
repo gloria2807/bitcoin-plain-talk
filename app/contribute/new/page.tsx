@@ -1,0 +1,407 @@
+'use client';
+
+import Link from 'next/link';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import LanguageSelectorWrapper from '@/components/LanguageSelectorWrapper';
+import Logo from '@/components/Logo';
+import { CATEGORIES, LANGUAGES } from '@/lib/glossary-submission';
+
+interface EnglishTerm {
+  slug: string;
+  title: string;
+}
+
+type Mode = 'new' | 'translate';
+type Status = 'idle' | 'submitting' | 'success' | 'error';
+
+const inputStyle = {
+  background: 'white',
+  borderColor: '#e8d9c8',
+  color: 'var(--brand-ink)',
+  fontFamily: 'var(--font-manrope)',
+};
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm font-bold" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+        {label}
+      </span>
+      {hint && (
+        <span className="mt-1 block text-xs" style={{ color: '#8a7360', fontFamily: 'var(--font-manrope)' }}>
+          {hint}
+        </span>
+      )}
+      <div className="mt-2">{children}</div>
+    </label>
+  );
+}
+
+export default function NewSubmissionPage() {
+  const [mode, setMode] = useState<Mode>('new');
+  const [language, setLanguage] = useState('sw');
+  const [englishTerms, setEnglishTerms] = useState<EnglishTerm[]>([]);
+  const [selectedSlug, setSelectedSlug] = useState('');
+  const [term, setTerm] = useState('');
+  const [category, setCategory] = useState<string>(CATEGORIES[0]);
+  const [plainEnglish, setPlainEnglish] = useState('');
+  const [analogy, setAnalogy] = useState('');
+  const [inContextQuote, setInContextQuote] = useState('');
+  const [inContextMeaning, setInContextMeaning] = useState('');
+  const [whyItMatters, setWhyItMatters] = useState('');
+  const [relatedTerms, setRelatedTerms] = useState('');
+  const [contributorName, setContributorName] = useState('');
+  const [website, setWebsite] = useState('');
+  const [status, setStatus] = useState<Status>('idle');
+  const [message, setMessage] = useState('');
+  const [prUrl, setPrUrl] = useState<string | null>(null);
+
+  const translateLanguages = useMemo(() => LANGUAGES.filter((l) => l.code !== 'en'), []);
+
+  useEffect(() => {
+    if (mode !== 'translate') return;
+    fetch('/api/terms?lang=en&limit=1000')
+      .then((res) => res.json())
+      .then((data) => setEnglishTerms((data.items ?? []).map((t: { slug: string; title: string }) => ({ slug: t.slug, title: t.title }))))
+      .catch(() => setEnglishTerms([]));
+  }, [mode]);
+
+  const effectiveSlug = selectedSlug || englishTerms[0]?.slug || '';
+  const selectedEnglishTerm = englishTerms.find((t) => t.slug === effectiveSlug);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus('submitting');
+    setMessage('');
+    setPrUrl(null);
+
+    const termName = mode === 'translate' ? selectedEnglishTerm?.title ?? '' : term;
+
+    const payload = {
+      mode,
+      language,
+      slug: mode === 'translate' ? effectiveSlug : undefined,
+      term: termName,
+      category,
+      plainEnglish,
+      analogy,
+      inContextQuote,
+      inContextMeaning,
+      whyItMatters,
+      relatedTerms: relatedTerms
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean),
+      contributorName: contributorName.trim() || undefined,
+      website,
+    };
+
+    try {
+      const res = await fetch('/api/contribute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus('error');
+        setMessage(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setStatus('success');
+      setPrUrl(data.url);
+    } catch {
+      setStatus('error');
+      setMessage('Could not reach the server. Please check your connection and try again.');
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
+        <main className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
+          <h2 className="text-3xl font-extrabold" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-sora)' }}>
+            Thank you!
+          </h2>
+          <p className="mt-4 text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
+            Your submission has been opened as a pull request for a maintainer to review.
+          </p>
+          {prUrl && (
+            <a
+              href={prUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-block rounded-full px-8 py-3 font-bold text-white"
+              style={{ background: 'var(--brand-orange)', fontFamily: 'var(--font-manrope)' }}
+            >
+              View the pull request →
+            </a>
+          )}
+          <div className="mt-8">
+            <Link href="/contribute" className="font-semibold" style={{ color: 'var(--brand-rust)' }}>
+              ← Back to Contribute
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
+      <header
+        className="border-b backdrop-blur-sm"
+        style={{ background: 'rgba(252,247,239,0.88)', borderColor: '#e8d9c8' }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <Link href="/">
+              <Logo />
+            </Link>
+            <nav className="flex items-center gap-6">
+              <Link href="/glossary" className="hover-rust text-sm font-semibold" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
+                Glossary
+              </Link>
+              <Link href="/contribute" className="text-sm font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}>
+                Contribute
+              </Link>
+              <Suspense
+                fallback={
+                  <div className="rounded-lg border px-3 py-1.5 text-sm font-medium" style={{ borderColor: 'var(--brand-terracotta)', color: 'var(--brand-ink)' }}>
+                    English
+                  </div>
+                }
+              >
+                <LanguageSelectorWrapper />
+              </Suspense>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8 text-center">
+          <h2 className="text-4xl font-extrabold tracking-tight" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-sora)' }}>
+            Suggest a Term
+          </h2>
+          <p className="mt-3 text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
+            Fill in the form below. We&apos;ll open it as a pull request for a maintainer to review — no GitHub account needed.
+          </p>
+        </div>
+
+        <div className="mb-6 flex justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setMode('new')}
+            className="rounded-full px-5 py-2 text-sm font-bold transition-colors"
+            style={
+              mode === 'new'
+                ? { background: 'var(--brand-orange)', color: 'white' }
+                : { background: 'var(--brand-shell)', color: 'var(--brand-ink)', border: '1px solid #e8d9c8' }
+            }
+          >
+            Add a new concept
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('translate')}
+            className="rounded-full px-5 py-2 text-sm font-bold transition-colors"
+            style={
+              mode === 'translate'
+                ? { background: 'var(--brand-orange)', color: 'white' }
+                : { background: 'var(--brand-shell)', color: 'var(--brand-ink)', border: '1px solid #e8d9c8' }
+            }
+          >
+            Translate an existing term
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border p-8" style={{ background: 'var(--brand-shell)', borderColor: '#e8d9c8' }}>
+          {/* Honeypot — hidden from real users */}
+          <div style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }} aria-hidden="true">
+            <label>
+              Leave this field blank
+              <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+            </label>
+          </div>
+
+          {mode === 'translate' ? (
+            <>
+              <Field label="Existing English term">
+                <select
+                  required
+                  value={effectiveSlug}
+                  onChange={(e) => setSelectedSlug(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2"
+                  style={inputStyle}
+                >
+                  {englishTerms.length === 0 && <option value="">Loading terms…</option>}
+                  {englishTerms.map((t) => (
+                    <option key={t.slug} value={t.slug}>
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Translate into">
+                <select
+                  required
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2"
+                  style={inputStyle}
+                >
+                  {translateLanguages.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </>
+          ) : (
+            <>
+              <Field label="Term name" hint="Exactly as it should appear, e.g. Multisig">
+                <input
+                  required
+                  value={term}
+                  onChange={(e) => setTerm(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2"
+                  style={inputStyle}
+                />
+              </Field>
+              <Field label="Language">
+                <select
+                  required
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2"
+                  style={inputStyle}
+                >
+                  {LANGUAGES.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </>
+          )}
+
+          <Field label="Category">
+            <select
+              required
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Plain English explanation" hint="One clear sentence, no jargon">
+            <textarea
+              required
+              rows={2}
+              value={plainEnglish}
+              onChange={(e) => setPlainEnglish(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="Analogy" hint="A relatable comparison from everyday life">
+            <textarea
+              required
+              rows={3}
+              value={analogy}
+              onChange={(e) => setAnalogy(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="Example sentence" hint='An example sentence you might actually see or hear using this term'>
+            <input
+              required
+              value={inContextQuote}
+              onChange={(e) => setInContextQuote(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="What that example means">
+            <textarea
+              required
+              rows={2}
+              value={inContextMeaning}
+              onChange={(e) => setInContextMeaning(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="Why it matters" hint="Why should someone new to Bitcoin care?">
+            <textarea
+              required
+              rows={2}
+              value={whyItMatters}
+              onChange={(e) => setWhyItMatters(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="Related terms" hint="Comma-separated, e.g. Satoshi, Wallet, Blockchain">
+            <input
+              value={relatedTerms}
+              onChange={(e) => setRelatedTerms(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          <Field label="Your name (optional)" hint="For credit in the pull request">
+            <input
+              value={contributorName}
+              onChange={(e) => setContributorName(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+
+          {status === 'error' && (
+            <p className="text-sm font-semibold" style={{ color: '#b3261e' }}>
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={status === 'submitting'}
+            className="w-full rounded-full px-8 py-3 font-bold text-white transition-colors disabled:opacity-60"
+            style={{ background: 'var(--brand-orange)', fontFamily: 'var(--font-manrope)' }}
+          >
+            {status === 'submitting' ? 'Submitting…' : 'Submit for review'}
+          </button>
+        </form>
+      </main>
+    </div>
+  );
+}
