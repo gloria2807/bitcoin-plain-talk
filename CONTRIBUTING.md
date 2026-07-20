@@ -1,333 +1,95 @@
-# Contributing to Bitcoin Plain Talk
+# Contributing to Bitcoin Plain Talk 🚀
 
-Thank you for your interest in contributing to Bitcoin Plain Talk.
+Thank you for helping make Bitcoin easier to understand in African languages. You do not need to be a developer to contribute—translators, native speakers, educators, writers, reviewers, researchers, sponsors, and developers are all welcome.
 
-Bitcoin Plain Talk exists to make Bitcoin easier to understand by translating complex concepts into simple language and localizing them for African communities.
+## Choose Your Contribution Path
 
-Every contribution helps make Bitcoin education more accessible while expanding digital resources for African languages.
+Start with the guide that best matches your contribution:
 
-Whether you're a Bitcoin educator, translator, writer, researcher, developer, or simply a native speaker of an African language, your contribution matters.
+| Contributor type | Guide | What it covers |
+| :--- | :--- | :--- |
+| **👩‍💻 Developers** | [Developer Contribution Guide](./docs/DEVELOPER_GUIDE.md) | Local setup, testing, branches, commits, and pull requests |
+| **💖 Sponsors** | [Sponsor & Funding Guide](./docs/SPONSOR_GUIDE.md) | Funding options, sponsorship principles, and how to contact maintainers |
+| **🌐 Translators** | [Translation & Localization Guide](./docs/TRANSLATION_GUIDE.md) | Glossary translation, language review, and localization workflow |
 
-This document provides guidelines and information for contributors.
+For an overview of the mission and project, read the [README](./README.md).
 
-# Table of Contents
+## Other Ways to Contribute
 
-* Getting Started
-* Contribution Workflow
-* Ways to Contribute
-* Content Guidelines
-* Translation Guidelines
-* Pull Request Process
-* Issue Reporting
-* Documentation Standards
-* Project Structure
-* Areas for Contribution
-* Getting Help
-* License
+You can also help by:
 
-# Getting Started
+- Simplifying an existing glossary explanation
+- Adding a missing Bitcoin concept
+- Suggesting a culturally relevant everyday analogy
+- Reviewing Bitcoin accuracy, clarity, or cultural relevance
+- Improving documentation, accessibility, audio, or visual resources
+- Reporting an incorrect translation, confusing explanation, or bug
 
-You do not need to be a developer to contribute.
+## Shared Contribution Workflow
 
-We welcome:
+### 1. Find or open an issue
 
-* Native language speakers
-* Bitcoin learners
-* Translators
-* Writers
-* Educators
-* Researchers
-* Developers
+Search existing issues before starting. Look for labels such as `good-first-issue`, `help-wanted`, `translation`, or `documentation`.
 
-Before contributing, we recommend:
+If no issue covers your idea, open one and explain:
 
-* Reading the README
-* Reviewing existing glossary entries
-* Checking open issues
-* Understanding the project's goal of making Bitcoin concepts easier to understand
+- What you want to add, change, or fix
+- Why the change would help readers
+- Which language or part of the project it affects
 
-# Contribution Workflow
+For a large change, wait for maintainer feedback before beginning. This helps avoid duplicated or out-of-scope work.
 
-To avoid duplicate work and maintain smooth collaboration, please follow this workflow.
+### 2. Request assignment
 
-## 1. Choose or Create an Issue
+If the issue is unassigned, comment that you would like to work on it. Wait for assignment before beginning substantial work.
 
-### Option A: Pick an Existing Issue
+### 3. Make a focused contribution
 
-Browse repository issues and look for:
+Follow the relevant guide above. Keep each contribution small enough to review carefully, and avoid including unrelated changes in the same pull request.
 
-* good-first-issue
-* help-wanted
-* translation
-* documentation
+### 4. Open a pull request
 
-Read the issue carefully and check whether someone is already assigned.
+Your pull request should:
 
-### Option B: Create a New Issue
+- Clearly describe what changed and why
+- Link the issue with `Closes #<issue-number>` when applicable
+- Mention the language and dialect for translations
+- Identify any wording, analogy, or technical choice that needs extra review
+- Pass the relevant formatting, linting, and test checks
 
-If your idea, translation, or improvement does not already exist:
+Respond to reviewer questions and requested changes. Reviews are a normal part of improving accuracy and clarity.
 
-* Open a new issue
-* Explain your proposal
-* Wait for maintainer feedback before beginning large contributions
+## Content Principles
 
-## 2. Request Assignment
+Every contribution should be:
 
-Comment on the issue before starting work.
+- **Accurate:** Preserve the meaning of the Bitcoin concept.
+- **Beginner-friendly:** Do not assume technical knowledge.
+- **Clear:** Prefer short, direct explanations over jargon.
+- **Culturally relevant:** Use respectful examples readers recognize.
+- **Easy to translate:** Avoid idioms or complexity that do not add meaning.
+- **Safe:** Never request seed phrases or private keys, and do not add investment promises, price predictions, or financial advice.
 
-Example:
+If a technical term is necessary, explain it in plain language. Glossary entries should follow [`glossary/_template.md`](./glossary/_template.md).
 
-> Hi! I'd like to contribute to this issue. Could you please assign it to me?
+## Reviews and Conduct
 
-Wait for assignment before beginning major work.
+Review the contribution, not the contributor. Give specific, respectful feedback and remember that many contributors and readers may be new to Bitcoin or open source.
 
-## 3. Start Contributing
+When reviewing content, check:
 
-Once assigned:
+- Bitcoin accuracy and security implications
+- Plain-language clarity
+- Translation quality and natural wording
+- Cultural relevance and respectful examples
+- Consistency with the glossary template
 
-* Fork the repository
-* Create a branch
-* Make your contribution
-* Keep maintainers updated if necessary
+## Getting Help
 
-## 4. Submit a Pull Request
+If you are unsure how to proceed, ask in the relevant issue or pull request. You can also open an issue describing where you are stuck. Questions from first-time contributors are welcome.
 
-When your contribution is complete:
+## License
 
-* Push your branch
-* Open a pull request
-* Link the related issue
-* Respond to review feedback
+By contributing to Bitcoin Plain Talk, you agree that your contribution will be distributed under the project's MIT License.
 
-# Ways to Contribute
-
-## Add a Translation
-
-Translate an existing glossary entry into your local language.
-
-Examples:
-
-* Yoruba
-* Pidgin
-* Swahili
-* Kikuyu
-* Hausa
-* Igbo
-* Amharic
-* Zulu
-
-and many more.
-
-## Improve an Existing Explanation
-
-Help make explanations:
-
-* Simpler
-* Clearer
-* More beginner-friendly
-
-## Add Local Analogies
-
-One of the goals of Bitcoin Plain Talk is explaining Bitcoin using relatable examples.
-
-Examples:
-
-* Market transactions
-* Mobile money
-* Community savings groups
-* Everyday cash exchanges
-
-## Add New Bitcoin Concepts
-
-Create new glossary entries covering concepts that are currently missing.
-
-Examples:
-
-* Multisig
-* CoinJoin
-* Taproot
-* Routing Nodes
-* Channel Liquidity
-
-## Review Contributions
-
-Help review:
-
-* Accuracy
-* Clarity
-* Translation quality
-* Cultural relevance
-
-# Content Guidelines
-
-Every glossary entry should aim to be:
-
-* Accurate
-* Beginner-friendly
-* Easy to understand
-* Easy to translate
-* Culturally relevant
-
-Avoid unnecessary jargon whenever possible.
-
-If a technical term must be used, explain it clearly.
-
-## Recommended Entry Format
-
-```md
-# UTXO
-
-## Simple Explanation
-
-Explain the concept in plain language.
-
-## Technical Explanation
-
-Provide a more accurate Bitcoin-specific definition.
-
-## Everyday Analogy
-
-Use a relatable example.
-
-## Keywords
-
-bitcoin
-transactions
-utxo
-```
-
-# Translation Guidelines
-
-The goal is not word-for-word translation.
-
-The goal is understanding.
-
-When translating:
-
-* Preserve the meaning
-* Use natural language
-* Prioritize clarity over literal translation
-* Use local examples where appropriate
-
-If a Bitcoin term does not have a direct translation:
-
-* Keep the original term
-* Explain it in the target language
-
-# Project Structure
-
-```text
-bitcoin-plain-talk/
-├── glossary/
-│   ├── en/
-│   ├── yoruba/
-│   ├── pidgin/
-│   ├── swahili/
-│   └── kikuyu/
-│
-├── README.md
-└── CONTRIBUTING.md
-```
-
-# Pull Request Process
-
-## Branch Naming
-
-Examples:
-
-```bash
-translation/yoruba-utxo
-translation/pidgin-wallet
-docs/readme-update
-content/lightning-network
-```
-
-## Before Submitting
-
-Ensure:
-
-* Content is accurate
-* Formatting is consistent
-* Language is clear
-* Files are placed in the correct directory
-
-## Commit Message Examples
-
-```bash
-docs: improve README clarity
-translation: add yoruba utxo glossary
-translation: add swahili lightning network entry
-content: add multisig glossary entry
-```
-
-# Issue Reporting
-
-Before opening an issue:
-
-* Search existing issues
-* Confirm the issue has not already been reported
-* Provide enough information for maintainers to understand the problem
-
-Examples:
-
-* Incorrect translation
-* Confusing explanation
-* Missing glossary term
-* Formatting issue
-
-# Documentation Standards
-
-Documentation should always be:
-
-* Clear
-* Beginner-friendly
-* Concise
-* Easy to translate
-
-Remember that many readers may be encountering Bitcoin concepts for the first time.
-
-# Areas for Contribution
-
-## High Priority
-
-* New translations
-* Translation reviews
-* Simplifying explanations
-* New glossary entries
-* Contributor onboarding improvements
-
-## Medium Priority
-
-* Educational resources
-* Visual explanations
-* Audio resources
-* Documentation improvements
-
-## Future Areas
-
-* Dataset exports
-* AI-ready language resources
-* Community review systems
-* Educational tooling
-
-# Getting Help
-
-If you need help:
-
-* Open a GitHub issue
-* Start a discussion
-* Ask questions in pull request comments
-
-No question is too small.
-
-# License
-
-By contributing to Bitcoin Plain Talk, you agree that your contributions will be licensed under the project's MIT License.
-
-# Thank You
-
-Thank you for helping make Bitcoin more accessible.
-
-Every glossary entry, translation, review, and contribution helps someone better understand Bitcoin in a language they are comfortable with.
-
-Every word matters.
+Thank you for helping someone understand Bitcoin in a language they are comfortable using. Every word matters.
