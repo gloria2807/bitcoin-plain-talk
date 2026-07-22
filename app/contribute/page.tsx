@@ -29,13 +29,6 @@ export default function ContributePage() {
               >
                 Contribute
               </Link>
-              <Link
-                href="/ai-demo"
-                className="hover-rust text-sm font-semibold transition-colors"
-                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
-              >
-                AI Demo
-              </Link>
               <Suspense
                 fallback={
                   <div className="rounded-lg border px-3 py-1.5 text-sm font-medium" style={{ borderColor: "var(--brand-terracotta)", color: "var(--brand-ink)" }}>

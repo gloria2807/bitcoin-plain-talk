@@ -107,13 +107,6 @@ export default function GlossaryPageContent() {
               >
                 Contribute
               </Link>
-              <Link
-                href="/ai-demo"
-                className="hover-rust text-sm font-semibold transition-colors"
-                style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}
-              >
-                AI Demo
-              </Link>
               <LanguageSelector />
             </nav>
           </div>

@@ -30,13 +30,6 @@ export default function Home() {
               >
                 Contribute
               </Link>
-              <Link
-                href="/ai-demo"
-                className="text-sm font-semibold hover-rust transition-colors"
-                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
-              >
-                AI Demo
-              </Link>
               <Suspense
                 fallback={
                   <div
