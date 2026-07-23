@@ -66,3 +66,35 @@ body {
   border-color: var(--brand-orange);
   box-shadow: 0 8px 24px rgba(247, 147, 26, 0.12);
 }
+
+/* Logo animation */
+@keyframes logo-fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes logo-rays-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes logo-sun-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(247, 147, 26, 0)); }
+  50% { filter: drop-shadow(0 0 5px rgba(247, 147, 26, 0.6)); }
+}
+.logo-enter {
+  animation: logo-fade-up 0.6s ease-out both;
+}
+.logo-rays {
+  transform-origin: 35px 35px;
+  animation: logo-rays-spin 18s linear infinite;
+}
+.logo-sun-glow {
+  transform-origin: 35px 35px;
+  animation: logo-sun-pulse 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-enter,
+  .logo-rays,
+  .logo-sun-glow {
+    animation: none;
+  }
+}

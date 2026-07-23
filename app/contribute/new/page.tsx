@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Suspense, useEffect, useMemo, useState } from 'react';
-import LanguageSelectorWrapper from '@/components/LanguageSelectorWrapper';
-import Logo from '@/components/Logo';
-import { CATEGORIES, LANGUAGES } from '@/lib/glossary-submission';
+import { useEffect, useMemo, useState } from 'react';
+import SiteHeader from '@/components/SiteHeader';
+import { CATEGORIES, LANGUAGES, slugify } from '@/lib/glossary-submission';
 
 interface EnglishTerm {
   slug: string;
@@ -63,19 +62,58 @@ export default function NewSubmissionPage() {
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState('');
   const [prUrl, setPrUrl] = useState<string | null>(null);
+  const [englishTermsError, setEnglishTermsError] = useState(false);
+  const [existingSlugs, setExistingSlugs] = useState<Set<string>>(new Set());
+  const [existingSlugsError, setExistingSlugsError] = useState(false);
 
   const translateLanguages = useMemo(() => LANGUAGES.filter((l) => l.code !== 'en'), []);
 
   useEffect(() => {
     if (mode !== 'translate') return;
+    let cancelled = false;
     fetch('/api/terms?lang=en&limit=1000')
       .then((res) => res.json())
-      .then((data) => setEnglishTerms((data.items ?? []).map((t: { slug: string; title: string }) => ({ slug: t.slug, title: t.title }))))
-      .catch(() => setEnglishTerms([]));
+      .then((data) => {
+        if (cancelled) return;
+        setEnglishTerms((data.items ?? []).map((t: { slug: string; title: string }) => ({ slug: t.slug, title: t.title })));
+        setEnglishTermsError(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setEnglishTerms([]);
+        setEnglishTermsError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [mode]);
+
+  // Pre-check for a duplicate entry in the target language, so we can warn
+  // before the user fills out the whole form and hits the server's 409.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/terms?lang=${language}&limit=1000`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        const items: { slug: string }[] = data.items ?? [];
+        setExistingSlugs(new Set(items.map((t) => t.slug)));
+        setExistingSlugsError(false);
+      })
+      .catch(() => {
+        if (!cancelled) setExistingSlugsError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
 
   const effectiveSlug = selectedSlug || englishTerms[0]?.slug || '';
   const selectedEnglishTerm = englishTerms.find((t) => t.slug === effectiveSlug);
+
+  const candidateSlug = mode === 'translate' ? effectiveSlug : slugify(term);
+  const isDuplicate = candidateSlug !== '' && existingSlugs.has(candidateSlug);
+  const languageName = LANGUAGES.find((l) => l.code === language)?.name ?? language;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -159,35 +197,7 @@ export default function NewSubmissionPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
-      <header
-        className="border-b backdrop-blur-sm"
-        style={{ background: 'rgba(252,247,239,0.88)', borderColor: '#e8d9c8' }}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <Logo />
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link href="/glossary" className="hover-rust text-sm font-semibold" style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}>
-                Glossary
-              </Link>
-              <Link href="/contribute" className="text-sm font-bold" style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}>
-                Contribute
-              </Link>
-              <Suspense
-                fallback={
-                  <div className="rounded-lg border px-3 py-1.5 text-sm font-medium" style={{ borderColor: 'var(--brand-terracotta)', color: 'var(--brand-ink)' }}>
-                    English
-                  </div>
-                }
-              >
-                <LanguageSelectorWrapper />
-              </Suspense>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
@@ -245,13 +255,20 @@ export default function NewSubmissionPage() {
                   className="w-full rounded-lg border px-3 py-2"
                   style={inputStyle}
                 >
-                  {englishTerms.length === 0 && <option value="">Loading terms…</option>}
+                  {englishTerms.length === 0 && (
+                    <option value="">{englishTermsError ? 'Could not load terms' : 'Loading terms…'}</option>
+                  )}
                   {englishTerms.map((t) => (
                     <option key={t.slug} value={t.slug}>
                       {t.title}
                     </option>
                   ))}
                 </select>
+                {englishTermsError && (
+                  <p className="mt-2 text-sm font-semibold" style={{ color: '#b3261e', fontFamily: 'var(--font-manrope)' }}>
+                    Couldn&apos;t load the list of existing terms. Please refresh the page and try again.
+                  </p>
+                )}
               </Field>
               <Field label="Translate into">
                 <select
@@ -296,6 +313,19 @@ export default function NewSubmissionPage() {
                 </select>
               </Field>
             </>
+          )}
+
+          {isDuplicate && (
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-xl border p-4 text-sm font-semibold"
+              style={{ borderColor: '#f3c6c6', background: '#fdecec', color: '#8c2320', fontFamily: 'var(--font-manrope)' }}
+            >
+              <span aria-hidden="true">⚠️</span>
+              <span>
+                This term already exists in {languageName}. Want to suggest an edit on GitHub instead of submitting a duplicate?
+              </span>
+            </div>
           )}
 
           <Field label="Category">
@@ -387,19 +417,30 @@ export default function NewSubmissionPage() {
           </Field>
 
           {status === 'error' && (
-            <p className="text-sm font-semibold" style={{ color: '#b3261e' }}>
-              {message}
-            </p>
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-xl border p-4 text-sm font-semibold"
+              style={{ borderColor: '#f3c6c6', background: '#fdecec', color: '#8c2320', fontFamily: 'var(--font-manrope)' }}
+            >
+              <span aria-hidden="true">⚠️</span>
+              <span>{message}</span>
+            </div>
           )}
 
           <button
             type="submit"
-            disabled={status === 'submitting'}
+            disabled={status === 'submitting' || isDuplicate}
             className="w-full rounded-full px-8 py-3 font-bold text-white transition-colors disabled:opacity-60"
             style={{ background: 'var(--brand-orange)', fontFamily: 'var(--font-manrope)' }}
           >
             {status === 'submitting' ? 'Submitting…' : 'Submit for review'}
           </button>
+
+          {existingSlugsError && (
+            <p className="text-center text-xs" style={{ color: '#8a7360', fontFamily: 'var(--font-manrope)' }}>
+              Couldn&apos;t check for existing entries — duplicates will still be caught when you submit.
+            </p>
+          )}
         </form>
       </main>
     </div>

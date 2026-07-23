@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { Term } from '@/lib/glossary';
-import LanguageSelector from '@/components/LanguageSelector';
-import Logo from '@/components/Logo';
+import SiteHeader from '@/components/SiteHeader';
 
 export default function GlossaryPageContent() {
   const searchParams = useSearchParams();
@@ -82,36 +81,7 @@ export default function GlossaryPageContent() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
-      {/* Header */}
-      <header
-        className="sticky top-0 z-10 border-b backdrop-blur-sm"
-        style={{ background: 'rgba(252,247,239,0.92)', borderColor: '#e8d9c8' }}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <Logo />
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/glossary"
-                className="text-sm font-bold"
-                style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
-              >
-                Glossary
-              </Link>
-              <Link
-                href="/contribute"
-                className="hover-rust text-sm font-semibold transition-colors"
-                style={{ color: 'var(--brand-ink)', fontFamily: 'var(--font-manrope)' }}
-              >
-                Contribute
-              </Link>
-              <LanguageSelector />
-            </nav>
-          </div>
-        </div>
-      </header>
+      <SiteHeader sticky />
 
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Page Header */}
