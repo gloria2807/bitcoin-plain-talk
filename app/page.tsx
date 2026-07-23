@@ -1,51 +1,11 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import SearchBar from "@/components/SearchBar";
-import LanguageSelectorWrapper from "@/components/LanguageSelectorWrapper";
-import Logo from "@/components/Logo";
+import SiteHeader from "@/components/SiteHeader";
 
 export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: "var(--brand-sand)" }}>
-      {/* Header */}
-      <header
-        className="border-b backdrop-blur-sm"
-        style={{ background: "rgba(252,247,239,0.88)", borderColor: "#e8d9c8" }}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Logo />
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/glossary"
-                className="text-sm font-semibold hover-rust transition-colors"
-                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
-              >
-                Glossary
-              </Link>
-              <Link
-                href="/contribute"
-                className="text-sm font-semibold hover-rust transition-colors"
-                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
-              >
-                Contribute
-              </Link>
-              <Suspense
-                fallback={
-                  <div
-                    className="rounded-lg border px-3 py-1.5 text-sm font-medium"
-                    style={{ borderColor: "var(--brand-terracotta)", color: "var(--brand-ink)" }}
-                  >
-                    English
-                  </div>
-                }
-              >
-                <LanguageSelectorWrapper />
-              </Suspense>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Hero Section */}
       <section
