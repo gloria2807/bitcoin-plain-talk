@@ -315,6 +315,19 @@ export default function NewSubmissionPage() {
             </>
           )}
 
+          {isDuplicate && (
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-xl border p-4 text-sm font-semibold"
+              style={{ borderColor: '#f3c6c6', background: '#fdecec', color: '#8c2320', fontFamily: 'var(--font-manrope)' }}
+            >
+              <span aria-hidden="true">⚠️</span>
+              <span>
+                This term already exists in {languageName}. Want to suggest an edit on GitHub instead of submitting a duplicate?
+              </span>
+            </div>
+          )}
+
           <Field label="Category">
             <select
               required
@@ -402,19 +415,6 @@ export default function NewSubmissionPage() {
               style={inputStyle}
             />
           </Field>
-
-          {isDuplicate && (
-            <div
-              role="alert"
-              className="flex items-start gap-3 rounded-xl border p-4 text-sm font-semibold"
-              style={{ borderColor: '#f3c6c6', background: '#fdecec', color: '#8c2320', fontFamily: 'var(--font-manrope)' }}
-            >
-              <span aria-hidden="true">⚠️</span>
-              <span>
-                This term already exists in {languageName}. Want to suggest an edit on GitHub instead of submitting a duplicate?
-              </span>
-            </div>
-          )}
 
           {status === 'error' && (
             <div
