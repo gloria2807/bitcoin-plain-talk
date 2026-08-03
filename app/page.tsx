@@ -224,17 +224,7 @@ export default function Home() {
               className="text-sm"
               style={{ color: "#b8a090", fontFamily: "var(--font-manrope)" }}
             >
-              Built by{" "}
-              <a
-                href="https://twitter.com/wandiology"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold"
-                style={{ color: "var(--brand-orange)" }}
-              >
-                @wandiology
-              </a>{" "}
-              · MIT License — Free to use, share, and build on
+              Free to use, share, and build on
             </p>
           </div>
         </div>

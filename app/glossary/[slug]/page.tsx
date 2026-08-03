@@ -229,11 +229,7 @@ export default function TermPage({ params }: { params: Promise<{ slug: string }>
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <img src="/logo-full-lockup-reversed.svg" alt="Bitcoin Plain Talk" style={{ height: 28 }} />
             <p className="text-sm" style={{ color: '#b8a090', fontFamily: 'var(--font-manrope)' }}>
-              Built by{' '}
-              <a href="https://twitter.com/wandiology" target="_blank" rel="noopener noreferrer" className="font-semibold" style={{ color: 'var(--brand-orange)' }}>
-                @wandiology
-              </a>{' '}
-              · MIT License — Free to use, share, and build on
+              Free to use, share, and build on
             </p>
           </div>
         </div>

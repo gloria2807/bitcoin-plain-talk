@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Sora, Manrope } from "next/font/google";
+import SubiraGuide from "@/components/SubiraGuide";
 import "./globals.css";
 
 const sora = Sora({
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${sora.variable} ${manrope.variable} antialiased`}>
         {children}
+        <SubiraGuide />
       </body>
     </html>
   );

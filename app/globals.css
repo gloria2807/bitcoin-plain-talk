@@ -98,3 +98,46 @@ body {
     animation: none;
   }
 }
+
+/* Subira guide: pop-up entrance, idle bounce, speech bubble */
+@keyframes subira-pop-in {
+  0% { opacity: 0; transform: translateY(70px) scale(0.3) rotate(-10deg); }
+  55% { opacity: 1; transform: translateY(-14px) scale(1.08) rotate(5deg); }
+  75% { transform: translateY(4px) scale(0.97) rotate(-2deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+@keyframes subira-idle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes subira-bubble-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.subira-avatar {
+  opacity: 0;
+  animation: subira-pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    subira-idle-bounce 3.2s ease-in-out 1s infinite;
+}
+.subira-bubble {
+  animation: subira-bubble-in 0.25s ease-out both;
+}
+@keyframes subira-greeting-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.subira-greeting {
+  animation: subira-greeting-fade 0.35s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .subira-avatar {
+    animation: none;
+    opacity: 1;
+  }
+  .subira-bubble {
+    animation: none;
+  }
+  .subira-greeting {
+    animation: none;
+  }
+}
