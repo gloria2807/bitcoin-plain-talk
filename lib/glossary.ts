@@ -30,7 +30,7 @@ export function getAllTerms(language: string = 'en'): Term[] {
     .map(fileName => {
       const slug = fileName.replace(/\.md$/, '');
       const fullPath = path.join(langPath, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const fileContents = fs.readFileSync(fullPath, 'utf8').replace(/\r\n/g, '\n');
 
       // Parse the markdown content
       const lines = fileContents.split('\n');
@@ -71,7 +71,7 @@ export function getTermBySlug(slug: string, language: string = 'en'): Term | nul
     return null;
   }
 
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const fileContents = fs.readFileSync(fullPath, 'utf8').replace(/\r\n/g, '\n');
   const lines = fileContents.split('\n');
 
   const title = lines[0]?.replace(/^#\s*/, '') || slug;
