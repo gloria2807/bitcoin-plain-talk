@@ -8,13 +8,18 @@ Ciande cia Bitcoin iria wi nayo na ungihota gutumira, ta mbeca ciatiganite iria 
 
 ## Analogy
 
-Wiciirie Bitcoin yaku ta muigana umwe wa mbeca no ta gukorwo wi na nori nyingi cia bengi citiganiite, iria hamwe igukuhuthiria mbeca ciaku. Mundu angigutumira 0.03 BTC na ungi atume 0.01 BTC ndungikorwo na "0.04 BTC" — wina noti mwanya. Noti icio citagwo UTXO. Ungicionganiriria ungihuthira na woke mbeca no itigare.
+Wiciirie Bitcoin yaku ta muigana umwe wa mbeca, no ta gukorwo wĩ na nori nyingi cia bengi ciũtiganiĩte, iria hamwe igũgũhũthĩria mbeca ciaku.
+Mũndũ angĩgũtũmĩra 0.03 BTC, na ũngĩ atũme 0.01 BTC, ndũngĩkorwo na "0.04 BTC". Wĩ na nori igĩrĩ ciatiganĩte. Nori ici nĩcio ciĩtwo UTXO.
+Ũngĩcionganĩrĩria ũngĩhũthĩra hamwe kwoke mbeca, no ithiĩ ciatigarĩre.
 
 ## In Context
 
-*"My wallet is consolidating UTXOs to reduce future fees."*
+**"Wallet yakwa irarũndanĩria UTXO nĩguo igũthũkũria gũcaria mbeca nyingi rĩrĩa ngũtũma Bitcoin thutha-inĩ."**
 
-**What this means:** The wallet is combining many small pieces of bitcoin into fewer, larger ones. This makes future transactions cheaper, because fewer UTXOs means a smaller transaction size on the blockchain.
+**Ũndũ ũyũ nĩ ũhoro wa atĩa?**
+
+Wallet irarũndanĩria UTXO nini nyingi na igacooka ikorwo na UTXO nini nĩnene. Ũguo nĩguo rĩrĩa ũgatũma Bitcoin thutha-inĩ, ũtũmagĩra UTXO nini, na ũndũ ũcio ũgũtũma transaction yako ĩkorwo nĩnini. Transaction ĩrĩ nini nĩyo ĩhĩtũkĩria gũcaria mbeca nĩgũkorwo ĩtĩhũthĩrĩte nafasi nene thĩinĩ wa blockchain.
+
 
 ## Why It Matters
 
