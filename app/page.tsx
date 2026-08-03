@@ -1,8 +1,27 @@
+import fs from "fs";
+import path from "path";
 import Link from "next/link";
 import SearchBar from "@/components/SearchBar";
 import SiteHeader from "@/components/SiteHeader";
+import { getAllTerms } from "@/lib/glossary";
+
+function getStats() {
+  const glossaryDirectory = path.join(process.cwd(), "glossary");
+  const languageCount = fs
+    .readdirSync(glossaryDirectory, { withFileTypes: true })
+    .filter(entry => entry.isDirectory()).length;
+  const termCount = getAllTerms("en").length;
+  const roundedTermCount = Math.floor(termCount / 10) * 10;
+
+  return {
+    termCount: `${roundedTermCount}+`,
+    languageCount: `${languageCount}`,
+  };
+}
 
 export default function Home() {
+  const { termCount, languageCount } = getStats();
+
   return (
     <div className="min-h-screen" style={{ background: "var(--brand-sand)" }}>
       <SiteHeader />
@@ -42,8 +61,8 @@ export default function Home() {
 
           <div className="mt-12 flex flex-wrap justify-center gap-10">
             {[
-              { stat: "50+", label: "Bitcoin Terms" },
-              { stat: "5", label: "Languages" },
+              { stat: termCount, label: "Bitcoin Terms" },
+              { stat: languageCount, label: "Languages" },
               { stat: "100%", label: "Open Source" },
             ].map(({ stat, label }) => (
               <div key={label} className="text-center">
