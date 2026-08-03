@@ -302,7 +302,7 @@ export function getAllTerms(
     const markdown = fs.readFileSync(
       fullPath,
       'utf8'
-    );
+    ).replace(/\r\n/g, '\n');
 
     const sections = parseSections(markdown);
 
@@ -370,7 +370,7 @@ export function getTermBySlug(
   const markdown = fs.readFileSync(
     fullPath,
     'utf8'
-  );
+  ).replace(/\r\n/g, '\n');
 
   const sections = parseSections(markdown);
 
