@@ -84,6 +84,7 @@ Current focus includes:
 * Nigerian Pidgin
 * Swahili
 * Kikuyu
+* Wanga
 
 Future languages may include:
 

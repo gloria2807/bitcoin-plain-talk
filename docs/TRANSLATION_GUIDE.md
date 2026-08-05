@@ -15,6 +15,7 @@ Translate meaning, not individual words. A good entry should sound natural to a 
 | Nigerian Pidgin | `pcm` |
 | Kikuyu | `ki` |
 | Yoruba | `yo` |
+| Wanga  | `lwg` |
 
 Translations live in `glossary/<language-code>/`. If your language is not listed, open an issue before creating a new folder so maintainers can agree on its name, code, writing system, and reviewers.
 

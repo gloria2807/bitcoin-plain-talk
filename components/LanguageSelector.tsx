@@ -8,6 +8,7 @@ const languages = [
   { code: 'pcm', name: 'Pidgin' },
   { code: 'ki', name: 'Kikuyu' },
   { code: 'yo', name: 'Yoruba' },
+  { code: 'lwg', name: 'Wanga' },
 ];
 
 export default function LanguageSelector() {
