@@ -66,8 +66,30 @@ export default function TermPage({ params }: { params: Promise<{ slug: string }>
     return (
       <div className="min-h-screen" style={{ background: 'var(--brand-sand)' }}>
         {headerBar}
-        <div className="flex min-h-[60vh] items-center justify-center">
-          <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>Term not found</p>
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 text-center">
+          <img
+            src="/subira-avatar.png"
+            alt="Subira"
+            className="subira-avatar-shake h-20 w-20 rounded-full object-cover shadow-lg"
+            style={{ border: '3px solid var(--brand-shell)' }}
+            width={400}
+            height={400}
+          />
+          <p
+            className="max-w-sm text-lg font-semibold"
+            style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
+          >
+            {currentLang === 'sw'
+              ? 'Aa, sina neno hilo bado — nimelitunza ili nilijumuishe hivi karibuni! 📝'
+              : "Hmm, this one's not in my glossary yet — I've made a note to add it soon! 📝"}
+          </p>
+          <Link
+            href="/glossary"
+            className="hover-rust-bg mt-2 inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold text-white transition-colors"
+            style={{ background: 'var(--brand-orange)', fontFamily: 'var(--font-manrope)' }}
+          >
+            ← Back to Glossary
+          </Link>
         </div>
       </div>
     );

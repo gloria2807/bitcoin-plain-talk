@@ -205,9 +205,22 @@ export default function GlossaryPageContent() {
         )}
 
         {!loading && terms.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-lg" style={{ color: '#5a3e2b', fontFamily: 'var(--font-manrope)' }}>
-              No terms found
+          <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+            <img
+              src="/subira-avatar.png"
+              alt="Subira"
+              className="subira-avatar-shake h-20 w-20 rounded-full object-cover shadow-lg"
+              style={{ border: '3px solid var(--brand-shell)' }}
+              width={400}
+              height={400}
+            />
+            <p
+              className="max-w-sm text-lg font-semibold"
+              style={{ color: 'var(--brand-rust)', fontFamily: 'var(--font-manrope)' }}
+            >
+              {currentLang === 'sw'
+                ? 'Aa, sina neno hilo bado — nimelitunza ili nilijumuishe hivi karibuni! 📝'
+                : "Hmm, this one's not in my glossary yet — I've made a note to add it soon! 📝"}
             </p>
           </div>
         )}

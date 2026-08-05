@@ -14,6 +14,11 @@ const GREETINGS = [
   },
 ];
 
+const NOT_FOUND_MESSAGES = [
+  "Hmm, that one's not in my glossary yet — I've made a note to add it soon! 📝",
+  "Aa, sina neno hilo bado — nimelitunza ili nilijumuishe hivi karibuni! 📝",
+];
+
 function SpeakerIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -45,15 +50,45 @@ export default function SubiraGuide() {
   const [showBubble, setShowBubble] = useState(false);
   const [greetingIndex, setGreetingIndex] = useState(0);
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<"idle" | "checking" | "notfound">("idle");
+  const notFoundTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleAsk = (e: React.FormEvent) => {
+  const handleAsk = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = query.trim();
-    if (!trimmed) return;
+    if (!trimmed || status === "checking") return;
+
+    setStatus("checking");
+    if (notFoundTimer.current) clearTimeout(notFoundTimer.current);
+
+    try {
+      const [en, sw] = await Promise.all([
+        fetch(`/api/terms?lang=en&search=${encodeURIComponent(trimmed)}&limit=1`).then(r => r.json()),
+        fetch(`/api/terms?lang=sw&search=${encodeURIComponent(trimmed)}&limit=1`).then(r => r.json()),
+      ]);
+      const enCount = Array.isArray(en) ? en.length : (en.items?.length ?? 0);
+      const swCount = Array.isArray(sw) ? sw.length : (sw.items?.length ?? 0);
+
+      if (enCount === 0 && swCount === 0) {
+        setStatus("notfound");
+        notFoundTimer.current = setTimeout(() => setStatus("idle"), 4500);
+        return;
+      }
+    } catch {
+      // If the lookup fails, fall through and let the glossary page handle it.
+    }
+
     router.push(`/glossary?search=${encodeURIComponent(trimmed)}`);
     setQuery("");
     setShowBubble(false);
+    setStatus("idle");
   };
+
+  useEffect(() => {
+    return () => {
+      if (notFoundTimer.current) clearTimeout(notFoundTimer.current);
+    };
+  }, []);
 
   const playVoice = () => {
     const audio = audioRef.current;
@@ -78,12 +113,12 @@ export default function SubiraGuide() {
   }, [visible]);
 
   useEffect(() => {
-    if (!showBubble) return;
+    if (!showBubble || status !== "idle") return;
     const cycleTimer = setInterval(() => {
       setGreetingIndex(i => (i + 1) % GREETINGS.length);
     }, 3800);
     return () => clearInterval(cycleTimer);
-  }, [showBubble]);
+  }, [showBubble, status]);
 
   if (!visible) return null;
 
@@ -102,24 +137,34 @@ export default function SubiraGuide() {
           >
             ×
           </button>
-          <div className="flex items-start gap-1.5 pr-3">
+          {status === "notfound" ? (
             <p
-              key={greetingIndex}
+              key="notfound"
               className="subira-greeting text-sm leading-snug"
-              style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
+              style={{ color: "var(--brand-rust)", fontFamily: "var(--font-manrope)" }}
             >
-              {GREETINGS[greetingIndex].text}
+              {NOT_FOUND_MESSAGES[greetingIndex % NOT_FOUND_MESSAGES.length]}
             </p>
-            <button
-              type="button"
-              onClick={playVoice}
-              aria-label="Play voice greeting"
-              className="hover-rust mt-0.5 shrink-0 rounded-full p-1 transition-colors"
-              style={{ color: "var(--brand-rust)" }}
-            >
-              <SpeakerIcon />
-            </button>
-          </div>
+          ) : (
+            <div className="flex items-start gap-1.5 pr-3">
+              <p
+                key={greetingIndex}
+                className="subira-greeting text-sm leading-snug"
+                style={{ color: "var(--brand-ink)", fontFamily: "var(--font-manrope)" }}
+              >
+                {GREETINGS[greetingIndex].text}
+              </p>
+              <button
+                type="button"
+                onClick={playVoice}
+                aria-label="Play voice greeting"
+                className="hover-rust mt-0.5 shrink-0 rounded-full p-1 transition-colors"
+                style={{ color: "var(--brand-rust)" }}
+              >
+                <SpeakerIcon />
+              </button>
+            </div>
+          )}
           <audio ref={audioRef} className="hidden" />
 
           <form onSubmit={handleAsk} className="mt-2 flex items-center gap-1.5">
@@ -128,7 +173,8 @@ export default function SubiraGuide() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="e.g. mempool, UTXO..."
-              className="w-full min-w-0 rounded-full border px-3 py-1.5 text-xs focus:outline-none"
+              disabled={status === "checking"}
+              className="w-full min-w-0 rounded-full border px-3 py-1.5 text-xs focus:outline-none disabled:opacity-60"
               style={{
                 borderColor: "#e8d9c8",
                 background: "var(--brand-sand)",
@@ -141,10 +187,11 @@ export default function SubiraGuide() {
             <button
               type="submit"
               aria-label="Search"
-              className="hover-rust-bg shrink-0 rounded-full px-3 py-1.5 text-xs font-bold text-white transition-colors"
+              disabled={status === "checking"}
+              className="hover-rust-bg shrink-0 rounded-full px-3 py-1.5 text-xs font-bold text-white transition-colors disabled:opacity-60"
               style={{ background: "var(--brand-orange)", fontFamily: "var(--font-manrope)" }}
             >
-              Go
+              {status === "checking" ? "…" : "Go"}
             </button>
           </form>
         </div>
@@ -153,7 +200,9 @@ export default function SubiraGuide() {
       <button
         onClick={() => setShowBubble(b => !b)}
         aria-label="Open Subira, your Bitcoin guide"
-        className="subira-avatar h-16 w-16 overflow-hidden rounded-full shadow-lg sm:h-20 sm:w-20"
+        className={`subira-avatar h-16 w-16 overflow-hidden rounded-full shadow-lg sm:h-20 sm:w-20 ${
+          status === "notfound" ? "subira-avatar-shake" : ""
+        }`}
         style={{ border: "3px solid var(--brand-shell)", background: "var(--brand-shell)" }}
       >
         <img
