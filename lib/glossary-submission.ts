@@ -1,10 +1,12 @@
 export const CATEGORIES = [
-  'Network',
-  'Transactions',
-  'Security',
-  'Mining',
+  'Community',
   'Economy',
+  'Mining',
+  'Network',
+  'Privacy',
+  'Security',
   'Technology',
+  'Transactions',
 ] as const;
 
 export const LANGUAGES = [
